@@ -80,7 +80,8 @@ main {
 }
 .weather-forecast {
   margin-top: 20px;
-
+  display: flex;
+  justify-content: space-around;
   color: #000;
 }
 .weather-forecast-date {
@@ -88,8 +89,19 @@ main {
   opacity: 0.5;
 }
 
+.weather-forecast-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .weather-forecast-temperature-min {
   opacity: 0.5;
+}
+.weather-forecast-temperatures {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
 }
 .weather-forecast-temperature {
   font-size: 13px;
