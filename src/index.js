@@ -40,8 +40,20 @@ function formatDate(date) {
 
 function searchCity(city) {
   let apiKey = "5of9b61e3227f64b3eaa050fcft44f04";
-  let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}`;
-  axios.get(apiUrl).then(refreshWeather);
+  let currentApiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}`;
+  let forecastApiUrl = `https://api.shecodes.io/weather/v1/forecast?query=${city}&key=${apiKey}`;
+
+  axios
+    .all([axios.get(currentApiUrl), axios.get(forecastApiUrl)])
+    .then(
+      axios.spread(function (currentResponse, forecastResponse) {
+        refreshWeather(currentResponse);
+        displayForecast(forecastResponse);
+      })
+    )
+    .catch(function (error) {
+      console.log(error);
+    });
 }
 
 function handleSearchSubmit(event) {
@@ -52,11 +64,11 @@ function handleSearchSubmit(event) {
 
 function formatDay(timestamp) {
   let date = new Date(timestamp * 1000);
-  let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  let days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   return days[date.getDay()];
 }
 
-function dailyForecast(response) {
+function displayForecast(response) {
   let forecastElement = document.querySelector("#forecast");
   let forecastHTML = "";
 
@@ -65,6 +77,8 @@ function dailyForecast(response) {
       forecastHTML += `
       <div class="weather-forecast-day">
         <div class="weather-forecast-date">${formatDay(day.time)}</div>
+
+
         <img src="${day.condition.icon_url}" class="weather-forecast-icon" />
         <div class="weather-forecast-temperatures">
           <div class="weather-forecast-temperature">
